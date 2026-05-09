@@ -1,0 +1,133 @@
+import { useState } from "react";
+import useLocalStorage from "./CustomerHook";
+import "./App.css";
+
+export default function App() {
+  const [items, setItems] = useLocalStorage("Hoc",[]);
+
+  const [error, setError] = useState("");
+  const [newTodo, setNewTodo] = useState("");
+  const [filter, setFilter] = useState("all");
+
+  const filteredItems = items.filter((item) => {
+    if (filter === "completed") {
+      return item.done;
+    }
+
+    if (filter === "active") {
+      return !item.done;
+    }
+
+    return true;
+  });
+
+  function addItem(event) {
+    event.preventDefault();
+
+    const trim = newTodo.trim();
+
+    if (!trim) {
+      setError("Khong duoc de trong");
+      return;
+    }
+
+    const newItem = {
+      id: Date.now(),
+      name: trim,
+      done: false,
+    };
+
+    setItems([...items, newItem]);
+    setNewTodo("");
+    setError("");
+  }
+
+  function deleteItem(id) {
+    setItems(items.filter((item) => item.id !== id));
+  }
+
+  function checkDone(id) {
+    setItems(
+      items.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item
+      )
+    );
+  }
+
+  function deleteCompleted() {
+    setItems(items.filter((item) => !item.done));
+  }
+
+  const remainingCount = items.filter((item) => !item.done).length;
+
+  return (
+    <div className="app">
+      <div className="todo-list">
+
+        <form className="todo-form" onSubmit={addItem}>
+          <input
+            className="todo-input"
+            type="text"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            placeholder="Nhap Todo ..."
+          />
+
+          <button className="add-button" type="submit">
+            Add
+          </button>
+        </form>
+
+        {error && <p className="error">{error}</p>}
+
+        <div className="filter-buttons">
+          <button className="filter-button" onClick={() => setFilter("all")}>
+            Tất cả
+          </button>
+          <button
+            className="filter-button"
+            onClick={() => setFilter("completed")}
+          >
+            Đã hoàn thành
+          </button>
+          <button className="filter-button" onClick={() => setFilter("active")}>
+            Chưa hoàn thành
+          </button>
+        </div>
+
+        <p>Còn lại: {remainingCount} task</p>
+
+        <button className="clear-completed-button" onClick={deleteCompleted}>
+          Xóa tất cả task đã hoàn thành
+        </button>
+
+        {filteredItems.length === 0 ? (
+          <p>Không có task nào</p>
+        ) : (
+          filteredItems.map((item) => (
+            <div className="todo-item" key={item.id}>
+              <label>
+                <input
+                  type="checkbox"
+                  onChange={() => checkDone(item.id)}
+                  checked={item.done}
+                />
+
+                <span className={item.done ? "todo-name done" : "todo-name"}>
+                  {item.name}
+                </span>
+              </label>
+
+              <button
+                className="delete-button"
+                onClick={() => deleteItem(item.id)}
+              >
+                Xóa
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
