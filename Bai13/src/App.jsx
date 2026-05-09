@@ -76,7 +76,7 @@ export default function App() {
 
       <ul>
         {currentItems.map((item) => (
-          <li key={item.id}>{item}</li>
+          <li key={item}>{item}</li>
         ))}
       </ul>
 
