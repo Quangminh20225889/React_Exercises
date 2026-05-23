@@ -11,7 +11,7 @@ export default function App() {
         setLoading(true);
 
         const response = await fetch(
-          "https://jsonplaceholder.typicode.com/users"
+          "https://jsonplaceholder.typicode.com/users",
         );
 
         const data = await response.json();
@@ -32,7 +32,7 @@ export default function App() {
       setLoading(true);
 
       const response = await fetch(
-        `https://jsonplaceholder.typicode.com/users/${id}`
+        `https://jsonplaceholder.typicode.com/users/${id}`,
       );
 
       const data = await response.json();
@@ -72,9 +72,7 @@ export default function App() {
           <strong>Company:</strong> {selectedUser.company.name}
         </p>
 
-        <button onClick={() => setSelectedUser(null)}>
-          Back
-        </button>
+        <button onClick={() => setSelectedUser(null)}>Back</button>
       </div>
     );
   }
@@ -97,9 +95,7 @@ export default function App() {
 
           <p>{user.email}</p>
 
-          <button onClick={() => handleSelectUser(user.id)}>
-            View Detail
-          </button>
+          <button onClick={() => handleSelectUser(user.id)}>View Detail</button>
         </div>
       ))}
     </div>
